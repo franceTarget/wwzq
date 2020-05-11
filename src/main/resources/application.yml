@@ -1,0 +1,41 @@
+server:
+  port: 8800
+  servlet:
+    context-path: /
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org: debug
+    com: debug
+
+spring:
+  datasource:
+    username: root
+    password: hhh123
+    url: jdbc:mysql://localhost:3306/wwzq?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.ren.wwzq.dao
+  mapper: com.karle.tk.TkMapper
+  identity: MYSQL
+pagehelper:
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+pageSize: 10
+
+
+
