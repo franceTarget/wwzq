@@ -47,4 +47,12 @@ public class UserController {
         return Response.ok("查询成功", userService.getUserByToken(token));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "小程序登录", notes = "")
+    @PostMapping(value = "/applet/login")
+    public Response appletLogin(@Valid @RequestBody UserReq req) {
+
+        return Response.ok("登陆成功", null);
+    }
+
 }
