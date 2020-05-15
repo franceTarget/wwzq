@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ren.wwzq.dao.DictDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="DictMap" type="com.ren.wwzq.models.entity.Dict">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    <select id="queryByCategory" resultType="com.ren.wwzq.models.entity.Dict">
+        select name,value from dict where category = #{category} order by id
+    </select>
+
+</mapper>

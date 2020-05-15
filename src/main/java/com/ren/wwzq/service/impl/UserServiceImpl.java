@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByToken(String token) {
-        User user = (User) EhcacheUtil.get("user", token);
+        User user = (User) EhcacheUtil.get("data", token);
         return user;
     }
 
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         UserResp userResp = new UserResp();
         BeanUtils.copyProperties(user, userResp);
         userResp.setToken(uuid);
-        EhcacheUtil.put("user", uuid, user);
+        EhcacheUtil.put("data", uuid, user);
         return userResp;
     }
 }

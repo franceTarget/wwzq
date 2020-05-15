@@ -43,10 +43,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //允许编辑token
         allowEditToken(request, response);
-//        if (request.getRequestURL().toString().contains("swagger")
-//                || request.getRequestURL().toString().contains("api-docs")) {
-//            return true;
-//        }
+        if (request.getRequestURL().toString().contains("swagger")
+                || request.getRequestURL().toString().contains("api-docs")) {
+            return true;
+        }
 
         /*a
          *1，拦截用户请求，如果没有token，请求失败
