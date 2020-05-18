@@ -6,11 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 @SpringBootApplication
 @ComponentScan("com.ren")
 @MapperScan("com.ren.wwzq.dao")
+@EnableScheduling
 public class AppStarter {
 
     private static ApplicationContext context = null;

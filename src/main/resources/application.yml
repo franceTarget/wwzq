@@ -9,6 +9,10 @@ logging:
     org: debug
     com: debug
 
+aysnc:
+  task:
+    cron: 0/5 * * * * ?
+
 spring:
   datasource:
     username: root
