@@ -23,8 +23,8 @@ import java.util.UUID;
  * @description:
  */
 @Slf4j
-@Component
-@EnableScheduling
+//@Component
+//@EnableScheduling
 public class AysncTaskTimer extends ApplicationObjectSupport implements SchedulingConfigurer {
 
     @Value("${aysnc.task.cron}")

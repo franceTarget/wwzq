@@ -26,7 +26,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>info</level>
+            <level>debug</level>
         </filter>
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
@@ -39,9 +39,15 @@
     <!--输出到文件-->
 
     <!-- 时间滚动输出 level为 DEBUG 日志 -->
-    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 此日志文件只记录debug级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
         <!-- 正在记录的日志文件的路径及文件名 -->
-        <file>${LOG_PATH}/log_debug.log</file>
+        <file>${LOG_PATH}/debug.log</file>
         <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -57,18 +63,18 @@
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
-        <!-- 此日志文件只记录debug级别的 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>debug</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
 
     <!-- 时间滚动输出 level为 INFO 日志 -->
-    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 此日志文件只记录info级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
         <!-- 正在记录的日志文件的路径及文件名 -->
-        <file>${LOG_PATH}/log_info.log</file>
+        <file>${LOG_PATH}/info.log</file>
         <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -84,18 +90,18 @@
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
-        <!-- 此日志文件只记录info级别的 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>info</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
 
     <!-- 时间滚动输出 level为 WARN 日志 -->
-    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 此日志文件只记录warn级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
         <!-- 正在记录的日志文件的路径及文件名 -->
-        <file>${LOG_PATH}/log_warn.log</file>
+        <file>${LOG_PATH}/warn.log</file>
         <!--日志文件输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -110,17 +116,17 @@
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
-        <!-- 此日志文件只记录warn级别的 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>warn</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
 
 
     <!-- 时间滚动输出 level为 ERROR 日志 -->
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 此日志文件只记录ERROR级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_PATH}/log_error.log</file>
         <!--日志文件输出格式-->
@@ -137,12 +143,6 @@
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
-        <!-- 此日志文件只记录ERROR级别的 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
 
     <!--
@@ -168,7 +168,7 @@
     <logger name="java.sql.Connection" level="DEBUG" />
     <logger name="java.sql.Statement" level="DEBUG" />
     <logger name="java.sql.PreparedStatement" level="DEBUG" />
-    <!-- <logger name="org.springframework" level="WARN"/> -->
+    <logger name="com.ren" level="DEBUG"/>
 
     <!--
     root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
@@ -181,12 +181,12 @@
         <!--<logger name="com.nmys.view" level="debug"/>-->
     <!--</springProfile>-->
 
-    <root level="info">
+    <root level="INFO">
+        <appender-ref ref="ERROR" />
+        <appender-ref ref="WARN" />
+        <appender-ref ref="INFO" />
+        <appender-ref ref="DEBUG" />
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="DEBUG_FILE" />
-        <appender-ref ref="INFO_FILE" />
-        <appender-ref ref="WARN_FILE" />
-        <appender-ref ref="ERROR_FILE" />
     </root>
 
 </configuration>
