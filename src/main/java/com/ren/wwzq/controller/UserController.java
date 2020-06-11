@@ -33,7 +33,6 @@ import java.util.List;
  */
 @Api(tags = "用户操作接口")
 @ApiMapping
-@RestController
 public class UserController {
 
     @Autowired
@@ -44,7 +43,7 @@ public class UserController {
     private RestTemplate restTemplate;
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登录", notes = "")
+    @ApiOperation(value = "登录",response =UserResp.class , notes = "")
     @PostMapping(value = "/user/login")
     public Response<UserResp> login(@Valid @RequestBody UserReq req) {
         //密码校验

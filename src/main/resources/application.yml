@@ -13,6 +13,10 @@ aysnc:
   task:
     cron: 0/5 * * * * ?
 
+file:
+  path:
+    upload: E:/tmp
+
 spring:
   datasource:
     username: root
