@@ -17,9 +17,6 @@ public class WecatLoginResp {
     @ApiModelProperty("会话密钥")
     private String session_key;
 
-    @ApiModelProperty("用户在开放平台的唯一标识符")
-    private String unionid;
-
     @ApiModelProperty("错误码")
     private Integer errcode;
 

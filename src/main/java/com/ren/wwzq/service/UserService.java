@@ -1,6 +1,7 @@
 package com.ren.wwzq.service;
 
 import com.ren.wwzq.models.entity.User;
+import com.ren.wwzq.models.request.UserInfoReq;
 import com.ren.wwzq.models.request.UserReq;
 import com.ren.wwzq.models.response.UserResp;
 
@@ -16,4 +17,6 @@ public interface UserService {
     User loginSelect(UserReq req);
 
     UserResp login(User user);
+
+    String saveAppletUser(UserInfoReq req);
 }

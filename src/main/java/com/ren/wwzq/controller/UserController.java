@@ -17,10 +17,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
@@ -43,7 +43,7 @@ public class UserController {
     private RestTemplate restTemplate;
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登录",response =UserResp.class , notes = "")
+    @ApiOperation(value = "登录", response = UserResp.class, notes = "")
     @PostMapping(value = "/user/login")
     public Response<UserResp> login(@Valid @RequestBody UserReq req) {
         //密码校验
@@ -62,9 +62,9 @@ public class UserController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "小程序首次登录", notes = "")
-    @PostMapping(value = "/user/applet/first/login")
-    public Response<WecatLoginResp> appletLogin(@Valid @RequestBody UserInfoReq req) {
+    @ApiOperation(value = "小程序获取三方session", notes = "")
+    @GetMapping(value = "/user/applet/third/session")
+    public Response<String> appletLogin(@RequestParam String code) {
         List<Dict> dicts = dictService.queryByCategory(Constants.APPLET_CONFIG);
         StringBuilder sb = new StringBuilder();
         sb.append(Constants.APPLET_LOGIN_URL)
@@ -79,11 +79,18 @@ public class UserController {
                 .append("&")
                 .append("js_code")
                 .append("=")
-                .append(req.getCode())
+                .append(code)
                 .append("&grant_type=authorization_code");
         String result = restTemplate.getForObject(sb.toString(), String.class);
         WecatLoginResp wecatLoginResp = JSONObject.parseObject(result, WecatLoginResp.class);
-        return Response.ok("登陆成功", wecatLoginResp);
+
+        return Response.ok("登陆成功", "");
+    }
+
+    @ApiOperation(value = "小程序用户保存", notes = "")
+    @PostMapping("/user/applet/save")
+    public Response<String> saveAppletUser(@RequestBody UserInfoReq req) {
+        return Response.ok("", userService.saveAppletUser(req));
     }
 
 }

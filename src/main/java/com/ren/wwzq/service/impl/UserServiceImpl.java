@@ -3,6 +3,7 @@ package com.ren.wwzq.service.impl;
 import com.ren.wwzq.common.utils.EhcacheUtil;
 import com.ren.wwzq.dao.UserDao;
 import com.ren.wwzq.models.entity.User;
+import com.ren.wwzq.models.request.UserInfoReq;
 import com.ren.wwzq.models.request.UserReq;
 import com.ren.wwzq.models.response.UserResp;
 import com.ren.wwzq.service.UserService;
@@ -43,5 +44,10 @@ public class UserServiceImpl implements UserService {
         userResp.setToken(uuid);
         EhcacheUtil.put("data", uuid, user);
         return userResp;
+    }
+
+    @Override
+    public String saveAppletUser(UserInfoReq req) {
+        return null;
     }
 }

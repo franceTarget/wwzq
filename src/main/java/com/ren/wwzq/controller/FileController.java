@@ -29,7 +29,7 @@ public class FileController {
     @Value("${file.path.upload}")
     private String fileUploadPath;
 
-    @ApiOperation(value = "登录", notes = "")
+    @ApiOperation(value = "文件上传", notes = "")
     @PostMapping("/file/Upload")
     public Response fileUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
