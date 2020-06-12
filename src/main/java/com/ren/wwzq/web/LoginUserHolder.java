@@ -10,6 +10,8 @@ import com.ren.wwzq.models.po.UserInfo;
  */
 public class LoginUserHolder {
 
+    private LoginUserHolder(){}
+
     private static ThreadLocal<UserInfo> loginUser = new ThreadLocal<>();
 
     /**

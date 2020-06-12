@@ -6,10 +6,10 @@ import com.ren.wwzq.common.annotation.ApiMapping;
 import com.ren.wwzq.common.annotation.IgnoreLoginCheck;
 import com.ren.wwzq.models.entity.Dict;
 import com.ren.wwzq.models.entity.User;
+import com.ren.wwzq.models.po.UserInfo;
 import com.ren.wwzq.models.request.UserInfoReq;
 import com.ren.wwzq.models.request.UserReq;
 import com.ren.wwzq.models.response.Response;
-import com.ren.wwzq.models.po.UserInfo;
 import com.ren.wwzq.models.response.UserResp;
 import com.ren.wwzq.models.response.WecatLoginResp;
 import com.ren.wwzq.service.DictService;
@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,9 +58,13 @@ public class UserController {
 
     @IgnoreLoginCheck
     @ApiOperation(value = "根据token获取信息", notes = "")
-    @PostMapping("/user/getUserByToken")
+    @GetMapping("/user/getUserByToken")
     public Response<UserInfo> getUserByToken(@ApiParam(value = "token") @RequestParam String token) {
-        return Response.ok("查询成功", userService.getUserByToken(token));
+        UserInfo userByToken = userService.getUserByToken(token);
+        userByToken.setOpenId(null);
+        userByToken.setSessionKey(null);
+        userByToken.setUnionId(null);
+        return Response.ok("查询成功", userByToken);
     }
 
     @IgnoreLoginCheck
@@ -86,16 +91,6 @@ public class UserController {
         WecatLoginResp wecatLoginResp = JSONObject.parseObject(result, WecatLoginResp.class);
         req.setOpenid(wecatLoginResp.getOpenid());
         req.setSessionKey(wecatLoginResp.getSession_key());
-        return Response.ok("登陆成功", userService.saveAppletUser(req));
-    }
-
-    @IgnoreLoginCheck
-    @ApiOperation(value = "小程序二次登陆", notes = "")
-    @PostMapping(value = "/user/applet/second/login")
-    public Response<String> appletLoginSecond(@RequestBody UserInfoReq req) {
-        UserInfo user = LoginUserHolder.getUser();
-        req.setOpenid(user.getOpenId());
-        req.setSessionKey(user.getSessionKey());
         return Response.ok("登陆成功", userService.saveAppletUser(req));
     }
 

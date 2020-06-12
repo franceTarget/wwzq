@@ -3,6 +3,7 @@ package com.ren.wwzq.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.ren.wwzq.common.utils.AESUtil;
 import com.ren.wwzq.common.utils.EhcacheUtil;
+import com.ren.wwzq.common.utils.IDUtil;
 import com.ren.wwzq.common.utils.SHA1Util;
 import com.ren.wwzq.dao.UserDao;
 import com.ren.wwzq.models.entity.User;
@@ -12,7 +13,6 @@ import com.ren.wwzq.models.request.UserInfoReq;
 import com.ren.wwzq.models.request.UserReq;
 import com.ren.wwzq.models.response.UserResp;
 import com.ren.wwzq.service.UserService;
-import com.ren.wwzq.web.LoginUserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,19 +78,24 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //通过openid查询用户是否存在
-//        User user = new User();
-//        user.setOpenid(req.getOpenid());
-//        User u = userDao.selectOne(user);
-//        if (null == u) {
-//            BeanUtils.copyProperties(req, user);
-//            user.setUnionId(appletUser.getUnionId());
-//        }
         UserInfo userInfo = new UserInfo();
+        //通过openid查询用户是否存在
+        User user = new User();
+        user.setOpenid(req.getOpenid());
+        User u = userDao.selectOne(user);
+        if (null == u) {
+            BeanUtils.copyProperties(req, user);
+            user.setUnionId(appletUser.getUnionId());
+            String id = IDUtil.nextStrId();
+            user.setId(id);
+            userDao.insertSelective(user);
+            userInfo.setId(id);
+        }else{
+            userInfo.setId(u.getId());
+        }
         userInfo.setOpenId(req.getOpenid());
         userInfo.setSessionKey(req.getSessionKey());
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        LoginUserHolder.bind(userInfo);
         EhcacheUtil.put("data", uuid, userInfo);
         return uuid;
     }

@@ -1,11 +1,11 @@
 package com.ren.wwzq.dao;
 
+import com.ren.wwzq.common.BaseDao;
 import com.ren.wwzq.models.entity.Dict;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author: target
