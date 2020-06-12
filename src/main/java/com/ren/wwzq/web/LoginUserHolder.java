@@ -1,6 +1,6 @@
 package com.ren.wwzq.web;
 
-import com.ren.wwzq.models.entity.User;
+import com.ren.wwzq.models.po.UserInfo;
 
 
 /**
@@ -10,16 +10,16 @@ import com.ren.wwzq.models.entity.User;
  */
 public class LoginUserHolder {
 
-    private static ThreadLocal<User> loginUser = new ThreadLocal<>();
+    private static ThreadLocal<UserInfo> loginUser = new ThreadLocal<>();
 
     /**
      * 获取当前登录用户
      */
-    public static User getUser() {
+    public static UserInfo getUser() {
         return loginUser.get();
     }
 
-    public static void bind(User user) {
+    public static void bind(UserInfo user) {
         loginUser.set(user);
     }
 
@@ -34,10 +34,10 @@ public class LoginUserHolder {
         return getUser().getId();
     }
 
-    public static String getUserName() {
+    public static String getNickName() {
         if (getUser() == null) {
             return null;
         }
-        return getUser().getName();
+        return getUser().getNickName();
     }
 }

@@ -3,7 +3,7 @@ package com.ren.wwzq.web.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.ren.wwzq.AppStarter;
 import com.ren.wwzq.common.annotation.IgnoreLoginCheck;
-import com.ren.wwzq.models.entity.User;
+import com.ren.wwzq.models.po.UserInfo;
 import com.ren.wwzq.service.UserService;
 import com.ren.wwzq.web.LoginUserHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         // step.2 检查token是否有效和是否过期
-        User user = AppStarter.getBean(UserService.class).getUserByToken(token);
+        UserInfo user = AppStarter.getBean(UserService.class).getUserByToken(token);
         if (user == null) {
             response.setStatus(401);
             log.info("intercept request url:{}, userByToken:{}", request.getRequestURL(), user == null ? "NULL" : JSON.toJSONString(user));

@@ -3,6 +3,7 @@ package com.ren.wwzq.service;
 import com.ren.wwzq.models.entity.User;
 import com.ren.wwzq.models.request.UserInfoReq;
 import com.ren.wwzq.models.request.UserReq;
+import com.ren.wwzq.models.po.UserInfo;
 import com.ren.wwzq.models.response.UserResp;
 
 /**
@@ -12,7 +13,7 @@ import com.ren.wwzq.models.response.UserResp;
  */
 public interface UserService {
 
-    User getUserByToken(String token);
+    UserInfo getUserByToken(String token);
 
     User loginSelect(UserReq req);
 
