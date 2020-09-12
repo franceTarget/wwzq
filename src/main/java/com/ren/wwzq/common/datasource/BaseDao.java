@@ -1,4 +1,4 @@
-package com.ren.wwzq.common;
+package com.ren.wwzq.common.datasource;
 
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;

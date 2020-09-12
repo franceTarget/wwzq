@@ -1,6 +1,6 @@
 package com.ren.wwzq.dao;
 
-import com.ren.wwzq.common.BaseDao;
+import com.ren.wwzq.common.datasource.BaseDao;
 import com.ren.wwzq.models.entity.Dict;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
