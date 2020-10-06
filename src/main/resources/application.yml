@@ -6,8 +6,8 @@ server:
 logging:
   config: classpath:logback-spring.xml
   level:
-    org: debug
-    com: debug
+    org: info
+    com: info
 
 aysnc:
   task:
@@ -52,6 +52,13 @@ spring:
         max-idle: 10
         # 连接池中的最小空闲连接
         min-idle: 0
+  application:
+    name: backend-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:3001/eureka/
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

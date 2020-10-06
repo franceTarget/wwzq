@@ -181,7 +181,7 @@
         <!--<logger name="com.nmys.view" level="debug"/>-->
     <!--</springProfile>-->
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="ERROR" />
         <appender-ref ref="WARN" />
         <appender-ref ref="INFO" />
