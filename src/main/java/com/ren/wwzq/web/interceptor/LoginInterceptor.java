@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,46 +32,46 @@ public class LoginInterceptor implements HandlerInterceptor {
                              Object handler)
             throws Exception {
 
-        log.info("intercept request url:{}", request.getRequestURL());
-        //忽略token
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            Method method = handlerMethod.getMethod();
-            if (method.isAnnotationPresent(IgnoreLoginCheck.class)) {
-                return true;
-            }
-        }
-
-        //允许编辑token
-        allowEditToken(request, response);
-        if (request.getRequestURL().toString().contains("swagger")
-                || request.getRequestURL().toString().contains("api-docs")) {
-            return true;
-        }
-
-        /*a
-         *1，拦截用户请求，如果没有token，请求失败
-          2，验证token是否有效
-          3，把用户放入本地线程变量
-          4，刷新存储用户时间
-         */
-        // step.1 检查是否输入token
-        String token = request.getHeader("token");
-        if (StringUtils.isBlank(token)) {
-            log.info("intercept request url:{}, token:{}", request.getRequestURL(), "null");
-            response.setStatus(401);
-            return false;
-        }
-
-        // step.2 检查token是否有效和是否过期
-        UserInfo user = AppStarter.getBean(UserService.class).getUserByToken(token);
-        if (user == null) {
-            response.setStatus(401);
-            log.info("intercept request url:{}, userByToken:{}", request.getRequestURL(), user == null ? "NULL" : JSON.toJSONString(user));
-            return false;
-        }
-        //绑定用户到本地线程变量
-        LoginUserHolder.bind(user);
+//        log.info("intercept request url:{}", request.getRequestURL());
+//        //忽略token
+//        if (handler instanceof HandlerMethod) {
+//            HandlerMethod handlerMethod = (HandlerMethod) handler;
+//            Method method = handlerMethod.getMethod();
+//            if (method.isAnnotationPresent(IgnoreLoginCheck.class)) {
+//                return true;
+//            }
+//        }
+//
+//        //允许编辑token
+//        allowEditToken(request, response);
+//        if (request.getRequestURL().toString().contains("swagger")
+//                || request.getRequestURL().toString().contains("api-docs")) {
+//            return true;
+//        }
+//
+//        /*a
+//         *1，拦截用户请求，如果没有token，请求失败
+//          2，验证token是否有效
+//          3，把用户放入本地线程变量
+//          4，刷新存储用户时间
+//         */
+//        // step.1 检查是否输入token
+//        String token = request.getHeader("token");
+//        if (StringUtils.isBlank(token)) {
+//            log.info("intercept request url:{}, token:{}", request.getRequestURL(), "null");
+//            response.setStatus(401);
+//            return false;
+//        }
+//
+//        // step.2 检查token是否有效和是否过期
+//        UserInfo user = AppStarter.getBean(UserService.class).getUserByToken(token);
+//        if (user == null) {
+//            response.setStatus(401);
+//            log.info("intercept request url:{}, userByToken:{}", request.getRequestURL(), user == null ? "NULL" : JSON.toJSONString(user));
+//            return false;
+//        }
+//        //绑定用户到本地线程变量
+//        LoginUserHolder.bind(user);
         return true;
     }
 
