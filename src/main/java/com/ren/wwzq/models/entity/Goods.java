@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**

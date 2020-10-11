@@ -11,14 +11,19 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.Color;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -26,6 +31,35 @@ import java.util.List;
  * @Date 2020/10/7
  */
 public class ExportExcelUtil {
+
+    public static void exportExcelByTemplate(HttpServletResponse response, String fileName, ExcelData data, Integer version, String template) {
+        // 告诉浏览器用什么软件可以打开此文件
+        response.setHeader("content-Type", "application/vnd.ms-excel");
+        // 下载文件的默认名称
+        try {
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        XSSFWorkbook wb = null;
+        Resource resource = new ClassPathResource(template);
+        try (InputStream in = resource.getInputStream()) {
+            wb = new XSSFWorkbook(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 读取了模板内所有sheet内容
+        XSSFSheet sheet = wb.getSheetAt(0);
+        writeRowsToExcelByTemplate07(sheet, data.getRows(), 1);
+        autoSizeColumns(sheet, data.getRows().get(0).size() + 1);
+        try (ServletOutputStream out = response.getOutputStream()) {
+            wb.write(out);
+            wb.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void exportExcel(HttpServletResponse response, String fileName, ExcelData data, Integer version) {
         // 告诉浏览器用什么软件可以打开此文件
         response.setHeader("content-Type", "application/vnd.ms-excel");
@@ -80,33 +114,6 @@ public class ExportExcelUtil {
         writeRowsToExcel03(wb, sheet, data.getRows(), data.getTitles(), rowIndex);
         autoSizeColumns(sheet, data.getTitles().size() + 1);
         setSheetStyle03(wb, sheet, data);
-    }
-
-    private static void setSheetStyle03(HSSFWorkbook wb, HSSFSheet sheet, ExcelData data) {
-        List<CellTitle> titles = data.getTitles();
-        Font dataFont = wb.createFont();
-        dataFont.setFontName("simsun");
-        dataFont.setColor(IndexedColors.BLACK.index);
-        for (int i = 0; i < titles.size(); i++) {
-            HSSFCellStyle dataStyle = wb.createCellStyle();
-            dataStyle.setAlignment(HorizontalAlignment.CENTER);
-            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            dataStyle.setFont(dataFont);
-            dataStyle.setBorderTop(BorderStyle.THIN);
-            dataStyle.setBorderLeft(BorderStyle.THIN);
-            dataStyle.setBorderRight(BorderStyle.THIN);
-            dataStyle.setBorderBottom(BorderStyle.THIN);
-            dataStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            dataStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            dataStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            dataStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-            if (StringUtil.isNotEmpty(titles.get(i).getFormat())) {
-                HSSFDataFormat hssfDataFormat = wb.createDataFormat();
-                short format = hssfDataFormat.getFormat(titles.get(i).getFormat());
-                dataStyle.setDataFormat(format);
-            }
-            sheet.setDefaultColumnStyle(i, dataStyle);
-        }
     }
 
     private static int writeRowsToExcel03(HSSFWorkbook wb, HSSFSheet sheet, List<List<Object>> rows, List<CellTitle> titles, int rowIndex) {
@@ -165,56 +172,105 @@ public class ExportExcelUtil {
 
 
     private static void writeExcel07(XSSFWorkbook wb, Sheet sheet, ExcelData data) {
-        int rowIndex = 0;
-        rowIndex = writeTitlesToExcel07(wb, sheet, data.getTitles());
-        writeRowsToExcel07(wb, sheet, data.getRows(), data.getTitles(), rowIndex);
+        Map<String, XSSFCellStyle> stringXSSFCellStyleMap = writeTitlesToExcel07(wb, sheet, data.getTitles());
+        writeRowsToExcel07(wb, sheet, data.getRows(), data.getTitles(), stringXSSFCellStyleMap);
         autoSizeColumns(sheet, data.getTitles().size() + 1);
 //        setSheetStyle07(wb, sheet, data);
     }
 
-    private static int writeTitlesToExcel07(XSSFWorkbook wb, Sheet sheet, List<CellTitle> titles) {
+    private static Map<String, XSSFCellStyle> writeTitlesToExcel07(XSSFWorkbook wb, Sheet sheet, List<CellTitle> titles) {
         int rowIndex = 0;
 
-        Font titleFont = wb.createFont();
-        titleFont.setFontName("simsun");
-        titleFont.setBold(true);
-        titleFont.setColor(IndexedColors.BLACK.index);
+        Map<String, XSSFCellStyle> stytleMap = createStytleMap(wb, titles);
 
-        XSSFCellStyle titleStyle = wb.createCellStyle();
-        titleStyle.setAlignment(HorizontalAlignment.CENTER);
-        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        titleStyle.setFillForegroundColor(new XSSFColor(new Color(182, 184, 192)));
-        titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        titleStyle.setFont(titleFont);
-        setBorder07(titleStyle, BorderStyle.THIN, new XSSFColor(new Color(0, 0, 0)));
+//        Font titleFont = wb.createFont();
+//        titleFont.setFontName("simsun");
+//        titleFont.setBold(true);
+//        titleFont.setColor(IndexedColors.BLACK.index);
+//
+//        XSSFCellStyle titleStyle = wb.createCellStyle();
+//        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+//        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//        titleStyle.setFillForegroundColor(IndexedColors.WHITE1.getIndex());
+//        titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        titleStyle.setFont(titleFont);
+//        setBorder07(titleStyle, BorderStyle.THIN, new XSSFColor(new Color(0, 0, 0)));
 
         Row titleRow = sheet.createRow(rowIndex);
         int colIndex = 0;
         for (CellTitle cellTitle : titles) {
             Cell cell = titleRow.createCell(colIndex);
             cell.setCellValue(cellTitle.getName());
-            cell.setCellStyle(titleStyle);
+            cell.setCellStyle(stytleMap.get(cellTitle.getFormat()));
             colIndex++;
         }
-        rowIndex++;
-        return rowIndex;
+        return stytleMap;
     }
 
-    private static int writeRowsToExcel07(XSSFWorkbook wb, Sheet sheet, List<List<Object>> rows, List<CellTitle> titles, int rowIndex) {
+    private static Map<String, XSSFCellStyle> createStytleMap(XSSFWorkbook wb, List<CellTitle> titles) {
+        Map<String, XSSFCellStyle> map = new HashMap<>(8);
+        for (CellTitle cell : titles) {
+            if (!map.containsKey(cell.getFormat())) {
+                Font titleFont = wb.createFont();
+                titleFont.setFontName("simsun");
+                titleFont.setBold(true);
+                titleFont.setColor(IndexedColors.BLACK.index);
 
-        Font dataFont = wb.createFont();
-        dataFont.setFontName("simsun");
-        dataFont.setColor(IndexedColors.BLACK.index);
+                XSSFCellStyle titleStyle = wb.createCellStyle();
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+                titleStyle.setFillForegroundColor(IndexedColors.WHITE1.getIndex());
+                titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                titleStyle.setFont(titleFont);
+                setBorder07(titleStyle, BorderStyle.THIN, new XSSFColor(new Color(0, 0, 0)));
 
-        XSSFCellStyle dataStyle = wb.createCellStyle();
-        dataStyle.setAlignment(HorizontalAlignment.CENTER);
-        dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        dataStyle.setFont(dataFont);
-        setBorder07(dataStyle, BorderStyle.THIN, new XSSFColor(new Color(0, 0, 0)));
+                if (StringUtil.isNotEmpty(cell.getFormat())) {
+                    XSSFDataFormat dataFormat = wb.createDataFormat();
+                    short format = dataFormat.getFormat(cell.getFormat());
+                    titleStyle.setDataFormat(format);
+                }
+
+                map.put(cell.getFormat(), titleStyle);
+            }
+
+        }
+        return map;
+    }
+
+    private static int writeRowsToExcel07(XSSFWorkbook wb, Sheet sheet, List<List<Object>> rows, List<CellTitle> titles, Map<String, XSSFCellStyle> styleMap) {
+        int rowIndex = 1;
+//        Font dataFont = wb.createFont();
+//        dataFont.setFontName("simsun");
+//        dataFont.setColor(IndexedColors.BLACK.index);
+//
+//        XSSFCellStyle dataStyle = wb.createCellStyle();
+//        dataStyle.setAlignment(HorizontalAlignment.CENTER);
+//        dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//        dataStyle.setFont(dataFont);
+//        setBorder07(dataStyle, BorderStyle.THIN, new XSSFColor(new Color(0, 0, 0)));
         for (List<Object> rowData : rows) {
             Row dataRow = sheet.createRow(rowIndex);
             int colIndex = 0;
+            for (int i = 0; i < rowData.size(); i++) {
+                Object cellData = rowData.get(i);
+                Cell cell = dataRow.createCell(colIndex);
+                cell.setCellStyle(styleMap.get(titles.get(i).getFormat()));
+                if (cellData != null) {
+                    cell.setCellValue(cellData.toString());
+                } else {
+                    cell.setCellValue("");
+                }
+                colIndex++;
+            }
+            rowIndex++;
+        }
+        return rowIndex;
+    }
 
+    private static int writeRowsToExcelByTemplate07(XSSFSheet sheet, List<List<Object>> rows, int rowIndex) {
+        for (List<Object> rowData : rows) {
+            Row dataRow = sheet.createRow(rowIndex);
+            int colIndex = 0;
             for (Object cellData : rowData) {
                 Cell cell = dataRow.createCell(colIndex);
                 if (cellData != null) {
@@ -222,7 +278,6 @@ public class ExportExcelUtil {
                 } else {
                     cell.setCellValue("");
                 }
-                cell.setCellStyle(dataStyle);
                 colIndex++;
             }
             rowIndex++;
@@ -253,5 +308,32 @@ public class ExportExcelUtil {
         style.setBorderColor(XSSFCellBorder.BorderSide.LEFT, color);
         style.setBorderColor(XSSFCellBorder.BorderSide.RIGHT, color);
         style.setBorderColor(XSSFCellBorder.BorderSide.BOTTOM, color);
+    }
+
+    private static void setSheetStyle03(HSSFWorkbook wb, HSSFSheet sheet, ExcelData data) {
+        List<CellTitle> titles = data.getTitles();
+        Font dataFont = wb.createFont();
+        dataFont.setFontName("simsun");
+        dataFont.setColor(IndexedColors.BLACK.index);
+        for (int i = 0; i < titles.size(); i++) {
+            HSSFCellStyle dataStyle = wb.createCellStyle();
+            dataStyle.setAlignment(HorizontalAlignment.CENTER);
+            dataStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            dataStyle.setFont(dataFont);
+            dataStyle.setBorderTop(BorderStyle.THIN);
+            dataStyle.setBorderLeft(BorderStyle.THIN);
+            dataStyle.setBorderRight(BorderStyle.THIN);
+            dataStyle.setBorderBottom(BorderStyle.THIN);
+            dataStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+            dataStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+            dataStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+            dataStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+            if (StringUtil.isNotEmpty(titles.get(i).getFormat())) {
+                HSSFDataFormat hssfDataFormat = wb.createDataFormat();
+                short format = hssfDataFormat.getFormat(titles.get(i).getFormat());
+                dataStyle.setDataFormat(format);
+            }
+            sheet.setDefaultColumnStyle(i, dataStyle);
+        }
     }
 }

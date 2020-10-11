@@ -1,9 +1,9 @@
 package com.ren.wwzq.controller;
 
-import com.ren.wwzq.common.annotation.ApiMapping;
 import com.ren.wwzq.common.annotation.IgnoreLoginCheck;
 import com.ren.wwzq.common.utils.DateUtil;
 import com.ren.wwzq.common.utils.ExportExcelUtil;
+import com.ren.wwzq.common.utils.ExportUtil;
 import com.ren.wwzq.common.utils.JxlsUtil;
 import com.ren.wwzq.models.entity.Goods;
 import com.ren.wwzq.models.enums.ExcelVersion;
@@ -14,7 +14,9 @@ import com.ren.wwzq.service.GoodsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,24 +31,26 @@ import java.util.Map;
  * @Date 2020/10/2
  */
 @Api(tags = "表格操作")
-@ApiMapping
+@Controller
+@RequestMapping("/api/v1/wwzq")
 public class ExcelController {
 
     @Autowired
     private GoodsService goodsService;
 
+
     @IgnoreLoginCheck
-    @ApiOperation(value = "商品导出", response = Boolean.class)
+    @ApiOperation(value = "商品导出公共", response = Boolean.class)
     @GetMapping("/goods/export/poi")
     public Response<Boolean> exportGoods(HttpServletResponse response) {
         ExcelData data = new ExcelData();
         data.setName("hello");
         List<CellTitle> titles = new ArrayList();
-        CellTitle cellTitle1 = new CellTitle("名称",null);
-        CellTitle cellTitle2 = new CellTitle("价格","¥#,##0");
-        CellTitle cellTitle3 = new CellTitle("描述",null);
-        CellTitle cellTitle4 = new CellTitle("创建日期","yyyy-MM-dd");
-        CellTitle cellTitle5 = new CellTitle("创建时间","HH:mm:ss");
+        CellTitle cellTitle1 = new CellTitle("名称", null);
+        CellTitle cellTitle2 = new CellTitle("价格", "#,##0.00");
+        CellTitle cellTitle3 = new CellTitle("描述", null);
+        CellTitle cellTitle4 = new CellTitle("创建日期", "yyyy-MM-dd");
+        CellTitle cellTitle5 = new CellTitle("创建时间", "hh:mm:ss");
         titles.add(cellTitle1);
         titles.add(cellTitle2);
         titles.add(cellTitle3);
@@ -56,13 +60,13 @@ public class ExcelController {
 
         List<Goods> list = goodsService.selectAll();
         List<List<Object>> rows = new ArrayList();
-        for (Goods goods:list){
+        for (Goods goods : list) {
             List<Object> row = new ArrayList();
             row.add(goods.getName());
             row.add(goods.getPrice());
             row.add(goods.getDescription());
-            row.add(DateUtil.formatDateToString(goods.getCreateTime(),DateUtil.STYLE_TWO));
-            row.add(DateUtil.formatDateToString(goods.getCreateTime(),DateUtil.STYLE_THREE));
+            row.add(DateUtil.formatDateToString(goods.getCreateTime(), DateUtil.STYLE_TWO));
+            row.add(DateUtil.formatDateToString(goods.getCreateTime(), DateUtil.STYLE_THREE));
             rows.add(row);
         }
         data.setRows(rows);
@@ -71,6 +75,53 @@ public class ExcelController {
         return Response.ok(true);
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "商品导出数据", response = Boolean.class)
+    @GetMapping("/goods/export/poi/data")
+    public Response<Boolean> exportGoodsData(HttpServletResponse response) {
+        ExcelData data = new ExcelData();
+        data.setName("hello");
+        List<CellTitle> titles = new ArrayList();
+        CellTitle cellTitle1 = new CellTitle("名称", null);
+        CellTitle cellTitle2 = new CellTitle("价格", "#,##0.00");
+        CellTitle cellTitle3 = new CellTitle("描述", null);
+        CellTitle cellTitle4 = new CellTitle("创建日期", "yyyy-MM-dd");
+        CellTitle cellTitle5 = new CellTitle("创建时间", "hh:mm:ss");
+        titles.add(cellTitle1);
+        titles.add(cellTitle2);
+        titles.add(cellTitle3);
+        titles.add(cellTitle4);
+        titles.add(cellTitle5);
+        data.setTitles(titles);
+
+        List<Goods> list = goodsService.selectAll();
+        data.setData(list);
+        ExportUtil.exportExcel(response, "hello.xlsx", data, ExcelVersion.XLSX.getValue());
+        return Response.ok(true);
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "商品导出模板", response = Boolean.class)
+    @GetMapping("/goods/export/poi/byTemplate")
+    public Response<Boolean> exportGoodsByTemplate(HttpServletResponse response) {
+        ExcelData data = new ExcelData();
+        data.setName("hello");
+        List<Goods> list = goodsService.selectAll();
+        List<List<Object>> rows = new ArrayList();
+        for (Goods goods : list) {
+            List<Object> row = new ArrayList();
+            row.add(goods.getName());
+            row.add(goods.getPrice());
+            row.add(goods.getDescription());
+            row.add(DateUtil.formatDateToString(goods.getCreateTime(), DateUtil.STYLE_TWO));
+            row.add(DateUtil.formatDateToString(goods.getCreateTime(), DateUtil.STYLE_THREE));
+            rows.add(row);
+        }
+        data.setRows(rows);
+
+        ExportExcelUtil.exportExcelByTemplate(response, "hello.xlsx", data, ExcelVersion.XLSX.getValue(), "/template/goods.xlsx");
+        return Response.ok(true);
+    }
 
     @IgnoreLoginCheck
     @ApiOperation(value = "商品导出", response = Boolean.class)

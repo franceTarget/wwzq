@@ -1,6 +1,7 @@
 package com.ren.wwzq.models.po;
 
 import lombok.Data;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,8 +18,11 @@ public class ExcelData implements Serializable {
     //表头
     private List<CellTitle> titles;
 
-    //数据
+    //通用行数据
     private List<List<Object>> rows;
+
+    //数据
+    private List data;
 
     //页签名称
     private String name;

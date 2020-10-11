@@ -1,6 +1,5 @@
 package com.ren.wwzq.common.utils;
 
-import com.ren.wwzq.common.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
@@ -14,8 +13,8 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * @description
  * @author willing
+ * @description
  * @date 2020/10/8
  */
 @Slf4j
@@ -39,7 +38,7 @@ public class JxlsUtil {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         try {
-            response.setHeader("Content-Disposition", String.format("attachment;filename*=utf-8'zh_cn'%s",encodeFileName(agent, fileName).replaceAll("\\+", "%20")));
+            response.setHeader("Content-Disposition", String.format("attachment;filename*=utf-8'zh_cn'%s", encodeFileName(agent, fileName).replaceAll("\\+", "%20")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
