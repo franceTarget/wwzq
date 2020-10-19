@@ -99,4 +99,9 @@ public class UserServiceImpl implements UserService {
         EhcacheUtil.put("data", uuid, userInfo);
         return uuid;
     }
+
+    @Override
+    public User getById(String id) {
+        return userDao.selectByPrimaryKey(id);
+    }
 }

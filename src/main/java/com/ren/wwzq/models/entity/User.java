@@ -3,6 +3,7 @@ package com.ren.wwzq.models.entity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -4134717129081676807L;
 
+    @Id
     @ApiModelProperty(value = "主键")
     private String id;
 

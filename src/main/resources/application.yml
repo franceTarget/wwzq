@@ -19,20 +19,52 @@ file:
 
 spring:
   datasource:
-    username: root
-    password: hhh123
-    url: jdbc:mysql://localhost:3306/wwzq?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
-    driver-class-name: com.mysql.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 15
-      auto-commit: true
-      idle-timeout: 30000
-      pool-name: DatebookHikariCP
-      max-lifetime: 1800000
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
+    master:
+      username: root
+      password: hhh123
+      url: jdbc:mysql://localhost:3306/wwzq?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      hikari:
+        minimum-idle: 5
+        maximum-pool-size: 15
+        auto-commit: true
+        idle-timeout: 30000
+        pool-name: DatebookHikariCP
+        max-lifetime: 1800000
+        connection-timeout: 30000
+        connection-test-query: SELECT 1
+    cluster:
+      - key: slave1
+        username: root
+        password: hhh123
+        url: jdbc:mysql://localhost:3306/wwzq1?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        hikari:
+          minimum-idle: 5
+          maximum-pool-size: 15
+          auto-commit: true
+          idle-timeout: 30000
+          pool-name: DatebookHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
+      - key: slave2
+        username: root
+        password: hhh123
+        url: jdbc:mysql://localhost:3306/wwzq2?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        hikari:
+          minimum-idle: 5
+          maximum-pool-size: 15
+          auto-commit: true
+          idle-timeout: 30000
+          pool-name: DatebookHikariCP
+          max-lifetime: 1800000
+          connection-timeout: 30000
+          connection-test-query: SELECT 1
     redis:
       database: 1
       # Redis服务器地址

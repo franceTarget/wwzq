@@ -20,4 +20,6 @@ public interface UserService {
     UserResp login(User user);
 
     String saveAppletUser(UserInfoReq req);
+
+    User getById(String id);
 }
